@@ -94,7 +94,8 @@ Tip: you can override any config at the CLI, e.g. `model.temperature=0.5`.
 
 ### Prerequisites
 - Python 3.11+
-- [uv](https://github.com/astral-sh/uv) (recommended) or pip for package management
+- [uv](https://github.com/astral-sh/uv) for environment and dependency management
+- `ffmpeg` available on your system PATH
 
 ### Installation
 1. Clone the repository:
@@ -103,14 +104,16 @@ Tip: you can override any config at the CLI, e.g. `model.temperature=0.5`.
    cd TOPReward
    ```
 
-2. Create and activate a Conda environment, then install ffmpeg:
+2. Install `ffmpeg` (if not already installed):
    ```bash
-   conda create -n topreward python=3.11 -y
-   conda activate topreward
-   conda install -c conda-forge ffmpeg -y
+   # macOS (Homebrew)
+   brew install ffmpeg
+
+   # Ubuntu / Debian
+   sudo apt-get update && sudo apt-get install -y ffmpeg
    ```
 
-3. Set up a uv virtual environment and install dependencies:
+3. Set up a `uv` virtual environment and install dependencies:
     ```bash
     uv venv
     source .venv/bin/activate
