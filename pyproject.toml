@@ -37,14 +37,6 @@ dependencies = [
     "qwen-vl-utils>=0.0.14",
     "torchcodec==0.7.0",
     "molmo_utils",
-]
-
-[project.optional-dependencies]
-closed = [
-    "openai>=1.93.0",
-    "google-genai>=1.22.0",
-]
-open = [
     "flash-attn==2.8.3",
 ]
 
