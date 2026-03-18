@@ -4,8 +4,9 @@
 # Usage:
 #   ./scripts/batch_predict.sh
 #
-# Edit DATASETS below to list the dataset config names you want to run.
-# Each must correspond to a file in configs/dataset/<name>.yaml
+# Edit DATASETS below to list HuggingFace dataset IDs you want to run.
+# No per-dataset config file needed — the default dataset config is used
+# and dataset.dataset_name is overridden dynamically.
 #
 # All Hydra overrides (model, num_frames, sampling, etc.) can be tweaked
 # in the COMMON_OVERRIDES variable below.
@@ -47,13 +48,16 @@ COMMON_OVERRIDES=(
 )
 
 for ds in "${DATASETS[@]}"; do
+  # Derive a safe name for logging/output (replace / with _)
+  ds_safe="${ds//\//_}"
   echo "=========================================="
   echo "Running TOPReward on dataset: ${ds}"
   echo "=========================================="
   HYDRA_FULL_ERROR=1 PYTHONPATH=. uv run python3 -m topreward.scripts.predict \
     --config-dir configs/experiments \
     --config-name predict_topreward \
-    dataset="${ds}" \
+    "dataset.dataset_name=${ds}" \
+    "dataset.name=${ds_safe}" \
     "${COMMON_OVERRIDES[@]}"
 done
 
