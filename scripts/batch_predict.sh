@@ -11,7 +11,9 @@
 # All Hydra overrides (model, num_frames, sampling, etc.) can be tweaked
 # in the COMMON_OVERRIDES variable below.
 
-set -euo pipefail
+set -uo pipefail
+
+FAILED_DATASETS=()
 
 DATASETS=(
     RyanPan315464/stack_cube_so101
@@ -53,12 +55,25 @@ for ds in "${DATASETS[@]}"; do
   echo "=========================================="
   echo "Running TOPReward on dataset: ${ds}"
   echo "=========================================="
-  HYDRA_FULL_ERROR=1 PYTHONPATH=. uv run python3 -m topreward.scripts.predict \
+  if HYDRA_FULL_ERROR=1 PYTHONPATH=. uv run python3 -m topreward.scripts.predict \
     --config-dir configs/experiments \
     --config-name predict_topreward \
     "dataset.dataset_name=${ds}" \
     "dataset.name=${ds_safe}" \
-    "${COMMON_OVERRIDES[@]}"
+    "${COMMON_OVERRIDES[@]}"; then
+    echo "SUCCESS: ${ds}"
+  else
+    echo "FAILED: ${ds}"
+    FAILED_DATASETS+=("${ds}")
+  fi
 done
 
-echo "All datasets complete."
+echo ""
+echo "=========================================="
+echo "Batch complete. ${#FAILED_DATASETS[@]} dataset(s) failed."
+if [ ${#FAILED_DATASETS[@]} -gt 0 ]; then
+  echo "Failed datasets:"
+  for ds in "${FAILED_DATASETS[@]}"; do
+    echo "  - ${ds}"
+  done
+fi

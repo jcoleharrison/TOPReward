@@ -84,7 +84,18 @@ class HuggingFaceDataLoader(BaseDataLoader):
         logger.info(f"Loading episode [{episode_index}] frames from {from_idx} to {to_idx} (exclusive)")
 
         # Get camera key
-        camera_key = self._dataset.meta.camera_keys[self.camera_index]
+        camera_keys = self._dataset.meta.camera_keys
+        if not camera_keys:
+            raise ValueError(
+                f"Dataset '{self.dataset_name}' has no camera keys. "
+                "It may not contain video data."
+            )
+        if self.camera_index >= len(camera_keys):
+            raise ValueError(
+                f"camera_index={self.camera_index} out of range for dataset "
+                f"'{self.dataset_name}' which has {len(camera_keys)} camera(s): {camera_keys}"
+            )
+        camera_key = camera_keys[self.camera_index]
 
         # Batch-fetch timestamps from parquet (avoiding individual frame access)
         frame_indices = list(range(from_idx, to_idx))
@@ -92,7 +103,16 @@ class HuggingFaceDataLoader(BaseDataLoader):
         timestamps = [timestamps[idx].item() for idx in frame_indices]
 
         # Get video path
-        video_path = self._dataset.root / self._dataset.meta.get_video_file_path(episode_index, camera_key)
+        try:
+            video_path = self._dataset.root / self._dataset.meta.get_video_file_path(episode_index, camera_key)
+        except KeyError as e:
+            raise ValueError(
+                f"Could not resolve video path for episode {episode_index}, "
+                f"camera_key='{camera_key}' in dataset '{self.dataset_name}'. "
+                f"Available camera keys: {camera_keys}. "
+                f"The dataset may use an incompatible LeRobot version or format. "
+                f"Original error: {e}"
+            ) from e
 
         # BATCH DECODE all frames at once using optimized video codec
         # This is the key optimization - decode all frames in one operation
