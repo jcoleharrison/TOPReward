@@ -88,6 +88,10 @@ class BaseDataLoader(ABC):
             probs = np.array([1 / (total - i) for i in range(1, total)])
             probs /= probs.sum()
             frames = self._rng.choice(range(1, total), self.num_frames, replace=False, p=probs)
+        elif sampling == "last_n":
+            # Select the last num_frames frames from the episode
+            start = max(1, total - self.num_frames)
+            frames = np.arange(start, total, dtype=int)
         elif sampling == "gauss":
             mu = total / 2
             sigma = total / 6  # ~99.7% data within [0, total]
