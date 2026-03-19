@@ -267,6 +267,162 @@ DATASETS=(
   zxjessica/rum_test_phone
 )
 
+DATASETS=(
+  AK51/so100_test5
+  Aaron757/so100_test7
+  Aayush1104/Lego_Place_Block_On_Another
+  AkibaGeek/so100_test
+  AndrejOrsula/lerobot_double_ball_stacking_random
+  Ashwin7/so101_test_20250601_184631
+  Askel1419/so101_3obj_3cam
+  Atsushi-S/so100_test
+  Bartm3/dice3
+  BasedLukas/so101_temp
+  Benluncy/so100_test
+  BobBobbson/so100_First_Gripper_Test
+  BranoSandy/so100_test_1
+  CarolinePascal/plug_socket_mixed
+  Cornito/so101_chess17
+  DAbraham/5Position
+  DD99to5/so100_blocktest2
+  DD99to5/so100_test
+  Dangvi/so100_dataset
+  DanqingZ/new_tic_tac_toe_4_06182025
+  DanqingZ/pick_pink_1
+  DavidYeh0709/so100_david_0610_3
+  DorayakiLin/so100_pick_cube_in_box
+  EGLima/so100_test
+  Ethan208/so100_test
+  Gano007/so100_gano
+  Haribot099/SO101_3_cameras
+  HarrisonLee24/so100_test
+  InfiH/so100_test
+  JackLiuX/so100_test_candy
+  Jeevesh2009/so101_dummy1_test
+  JimmyPeng02/so100_test_6
+  Jinheng0130/Look
+  JongwonP/so101_test2
+  KeisukeSato1024/so101_pp_green_box_2cam
+  Kento2001/so100_test4
+  Kento2001/so100_test5
+  Kodstok/so100_test
+  Kunalmod/so101_test
+  LeRobot-worldwide-hackathon/173-Solo_Performer-so101_biowaste_final_test
+  Loki0929/so100_lan
+  Matinity2/datasettest2
+  MrAnton/so101_test
+  PearlWhite/so101_boll
+  PearlWhite/so101_test
+  QiGuaiOu/so100_test_v2
+  RASPIAUDIO/so100_test4
+  RaulSaya/Bylogic0
+  RaulSaya/bylogic1
+  andlyu/newiii_clean_many_cc
+  arulloomba/so100_test
+  asafxrev/so100_jenga_box_may24b_two_cameras
+  ataglem/so100_test5
+  b-sky-lab/act_so101_pick_boat
+  b-sky-lab/act_so101_pick_white_02
+  bap13/so101_test
+  baptiste-04/so100_test_v6
+  bensprenger/chess_game_001_blue_stereo
+  bensprenger/final_final_right_arm_test_v1
+  bjb7/so101_berm_build_test_1
+  bjb7/so101_berm_build_test_2
+  blanchon/play_orange12
+  burgalon/so100_test
+  bursomi/so101_test
+  campa-rabb/so100_test
+  crabarca/so101_test5
+  cyoung96/so100_tennis_balls
+  cyoung96/so100_test
+  danielritchie/so101_test3
+  degregor69/s100_test_2
+  dulics/so100_hellolerobot
+  dweiQAQ/so101_test_2
+  ecoqba/so100_test1
+  edgarkim/so100_test
+  emmanuel-v/so101_test
+  erlingling/so101_test
+  fbeltrao/so101_unplug_cable_2
+  furkanbsk/revel_merged_test
+  ganker5/so100_color_0328
+  gaoxmai/so100_v1
+  gerotropic/so101_pnp
+  goffiojc/so100_isa
+  gokulp01/ae598_main1
+  guanfengliu/grab_brush_diff_bin_orient2
+  gxy1111/so100_pen
+  hkphoooey/throw_stuffie
+  hoon-shin/so100_basketball
+  howardat666/so101_test
+  howld/so100_test
+  hrhraj/25513_bbox_dataset
+  huihui060124/so101_test
+  huihui060124/so101_test_50move
+  isadev/bougies2
+  isadev/bougies3
+  jakmilller/octopus_data
+  jccj/shape_matching_u
+  jiajun001/eraser00_2
+  joaoocruz00/so100_
+  joooonhocho/so100_doll_in_bowl_2
+  joooonhocho/so100_test_2
+  julyfun/so100_pick_and_place_v3_50
+  juni3227/so100_test
+  k1000dai/so101_pick_2_color_cube_and_put-smolvla
+  kaiserbuffle/hanoi
+  kami-LightYagami/so100_test
+  kami-LightYagami/so100_test_6.17_2
+  kantine/flip_A2
+  kevin-nd/so100_test_1
+  kkurzweil/so100_test_v002
+  kumarhans/defaultPls
+  kumarhans/new_test_5
+  kyomangold/so100_test
+  legalaspro/so101-greenblack-cube-cup-pnp-30hz
+  lime66/so100_test
+  lirislab/clear_square
+  lirislab/clear_square_orig
+  liuhuanjim013/so100_block
+  lizi178119985/so100_jia
+  nhorner/chess_a8_to_d8
+  pierfabre/CowCleanRandom
+  produc-xuan/so100_guess_who_without_videos
+  psg777/fixed
+  ptizzza/so101_pompom1
+  qiujun/so101_test_v2
+  qng95/so100_test
+  ricram2/this_is_my_test
+  roboticshack/team-7-right-arm-grasp-tape
+  rshoff/lerobot
+  rshoff/so101_test
+  rshoff/so101_test_2
+  ryanpennings/so100_pegcrate_c2
+  salhotra/so100_wrist_test1
+  sbyang19/so100_test_marker
+  seonixx/so100_test_v3
+  sergiov2000/so100_ball_leader_40
+  shawntan72/pick_and_place_pill_bottle_1
+  shawntan72/pick_and_place_pill_bottle_2
+  simiken1234/so100_test999
+  simjh96/so101_test
+  slowturtle99/so100_dataset_2
+  slowturtle99/so100_pick_place
+  smartrichard/so101_test2
+  speedyyoshi/so100_grasp_pink_block
+  squareoctopus/so101_dataset4
+  sshh11/so100_orange_50ep_2cam_2
+  sucrammal/plant_pour_data_again
+  sunq/so101_lego
+  szfforever/so101_60hz
+  tcccorp/deuxieme_test
+  tcccorp/premier_test
+  yadunund/so100_test
+  yingliu-data/so101_da_pinchi
+  yycgreentea/so100_test
+)
+
 # Common overrides applied to every run
 COMMON_OVERRIDES=(
   sampling_method=last_n
@@ -274,6 +430,7 @@ COMMON_OVERRIDES=(
   prediction.eval_all_episodes=false
   prediction.num_examples=10
   dataset.max_episodes=10
+  dataset.num_context_episodes=0
   prediction.save_raw=true
   prediction.continue_on_error=true
   prediction.predict_last_n_prefixes=3
