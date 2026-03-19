@@ -45,17 +45,30 @@ DATASETS=(
 COMMON_OVERRIDES=(
   sampling_method=last_n
   dataset.num_frames=3
-  prediction.eval_all_episodes=true
+  prediction.eval_all_episodes=false
+  prediction.num_examples=10
+  dataset.max_episodes=10
   prediction.save_raw=true
   prediction.continue_on_error=true
   prediction.predict_last_n_prefixes=3
 )
 
+DS_COUNT=0
 for ds in "${DATASETS[@]}"; do
+  DS_COUNT=$((DS_COUNT + 1))
+
+  # Clear HuggingFace / LeRobot cache every 5 datasets to free disk space
+  if [ $((DS_COUNT % 5)) -eq 0 ] && [ "$DS_COUNT" -gt 0 ]; then
+    echo "Clearing HuggingFace cache after ${DS_COUNT} datasets..."
+    rm -rf "${HF_HOME:-${HOME}/.cache/huggingface}/hub"
+    rm -rf "${HF_HOME:-${HOME}/.cache/huggingface}/lerobot"
+    rm -rf "${HF_HOME:-${HOME}/.cache/huggingface}/datasets"
+  fi
+
   # Derive a safe name for logging/output (replace / with _)
   ds_safe="${ds//\//_}"
   echo "=========================================="
-  echo "Running TOPReward on dataset: ${ds}"
+  echo "[${DS_COUNT}/${#DATASETS[@]}] Running TOPReward on dataset: ${ds}"
   echo "=========================================="
   if HYDRA_FULL_ERROR=1 PYTHONPATH=. uv run python3 -m topreward.scripts.predict \
     --config-dir configs/experiments \
