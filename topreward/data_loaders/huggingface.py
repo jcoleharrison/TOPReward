@@ -15,11 +15,14 @@ from topreward.utils.video_utils import decode_video_frames
 disable_progress_bar()
 
 
-def _ensure_v30(dataset_name: str) -> None:
+def _ensure_v30(dataset_name: str) -> bool:
     """If the local cache of *dataset_name* is v2.1, convert it to v3.0 in-place.
 
     If no local cache exists yet the conversion util will download v2.1 from the
     Hub, convert, and leave the v3.0 copy in the standard LeRobot cache directory.
+
+    Returns True if a conversion was performed (caller should skip force_cache_sync
+    since the Hub still advertises v2.1 and would reject the load).
     """
     from lerobot.utils.constants import HF_LEROBOT_HOME
 
@@ -30,7 +33,7 @@ def _ensure_v30(dataset_name: str) -> None:
         with open(info_path) as f:
             version = json.load(f).get("codebase_version", "unknown")
         if version == "v3.0":
-            return  # already converted
+            return False  # already converted
         logger.info(f"Dataset '{dataset_name}' is {version}, converting to v3.0 …")
     else:
         logger.info(f"No local cache for '{dataset_name}', will download and convert to v3.0 …")
@@ -39,6 +42,7 @@ def _ensure_v30(dataset_name: str) -> None:
 
     convert_dataset(repo_id=dataset_name, push_to_hub=False)
     logger.info(f"Conversion of '{dataset_name}' to v3.0 complete.")
+    return True
 
 
 class HuggingFaceDataLoader(BaseDataLoader):
@@ -73,12 +77,15 @@ class HuggingFaceDataLoader(BaseDataLoader):
         self.anchoring = anchoring
 
         # Ensure v3.0 format (auto-convert from v2.1 if needed)
-        _ensure_v30(dataset_name)
+        # If converted, skip force_cache_sync since the Hub still has v2.1
+        # and LeRobotDataset would reject the load with BackwardCompatibilityError
+        was_converted = _ensure_v30(dataset_name)
+        force_sync = not was_converted
 
         # Load dataset once (optimization #1: single dataset instance)
         logger.info(f"Loading dataset: {dataset_name}")
-        self._dataset = LeRobotDataset(dataset_name, force_cache_sync=True)
-        self.ds_meta = LeRobotDatasetMetadata(dataset_name, force_cache_sync=True)
+        self._dataset = LeRobotDataset(dataset_name, force_cache_sync=force_sync)
+        self.ds_meta = LeRobotDatasetMetadata(dataset_name, force_cache_sync=force_sync)
 
         # Get total episodes
         self.max_episodes = min(max_episodes or self.ds_meta.total_episodes, self.ds_meta.total_episodes)

@@ -16,8 +16,8 @@ set -uo pipefail
 FAILED_DATASETS=()
 
 DATASETS=(
-    RyanPan315464/stack_cube_so101
-    ShishKebab04/toy-in-bowl
+    # RyanPan315464/stack_cube_so101
+    # ShishKebab04/toy-in-bowl
     SharkDan/so100_test_f3c
     # badwolf256/so101_duck_picker
     # ivlabs/so101_test
@@ -59,7 +59,7 @@ for ds in "${DATASETS[@]}"; do
   DS_COUNT=$((DS_COUNT + 1))
 
   # Clear HuggingFace / LeRobot cache every 5 datasets to free disk space
-  if [ $((DS_COUNT % 5)) -eq 0 ] && [ "$DS_COUNT" -gt 0 ]; then
+  if [ $((DS_COUNT % 2)) -eq 0 ] && [ "$DS_COUNT" -gt 0 ]; then
     echo "Clearing HuggingFace cache after ${DS_COUNT} datasets..."
     rm -rf "${HF_HOME:-${HOME}/.cache/huggingface}/hub"
     rm -rf "${HF_HOME:-${HOME}/.cache/huggingface}/lerobot"
