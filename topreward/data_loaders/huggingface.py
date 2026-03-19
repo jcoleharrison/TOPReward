@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 import numpy as np
 from datasets.utils.logging import disable_progress_bar
 from lerobot.datasets.lerobot_dataset import LeRobotDataset, LeRobotDatasetMetadata
@@ -10,6 +13,32 @@ from topreward.utils.data_types import Example as FewShotInput
 from topreward.utils.video_utils import decode_video_frames
 
 disable_progress_bar()
+
+
+def _ensure_v30(dataset_name: str) -> None:
+    """If the local cache of *dataset_name* is v2.1, convert it to v3.0 in-place.
+
+    If no local cache exists yet the conversion util will download v2.1 from the
+    Hub, convert, and leave the v3.0 copy in the standard LeRobot cache directory.
+    """
+    from lerobot.utils.constants import HF_LEROBOT_HOME
+
+    local_root = HF_LEROBOT_HOME / dataset_name
+    info_path = local_root / "meta" / "info.json"
+
+    if info_path.exists():
+        with open(info_path) as f:
+            version = json.load(f).get("codebase_version", "unknown")
+        if version == "v3.0":
+            return  # already converted
+        logger.info(f"Dataset '{dataset_name}' is {version}, converting to v3.0 …")
+    else:
+        logger.info(f"No local cache for '{dataset_name}', will download and convert to v3.0 …")
+
+    from lerobot.datasets.v30.convert_dataset_v21_to_v30 import convert_dataset
+
+    convert_dataset(repo_id=dataset_name, push_to_hub=False)
+    logger.info(f"Conversion of '{dataset_name}' to v3.0 complete.")
 
 
 class HuggingFaceDataLoader(BaseDataLoader):
@@ -42,6 +71,9 @@ class HuggingFaceDataLoader(BaseDataLoader):
         self.camera_index = int(camera_index)
         self.sampling_method = sampling_method
         self.anchoring = anchoring
+
+        # Ensure v3.0 format (auto-convert from v2.1 if needed)
+        _ensure_v30(dataset_name)
 
         # Load dataset once (optimization #1: single dataset instance)
         logger.info(f"Loading dataset: {dataset_name}")
