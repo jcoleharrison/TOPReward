@@ -59,7 +59,7 @@ for ds in "${DATASETS[@]}"; do
   DS_COUNT=$((DS_COUNT + 1))
 
   # Clear HuggingFace / LeRobot cache every 5 datasets to free disk space
-  if [ $((DS_COUNT % 2)) -eq 0 ] && [ "$DS_COUNT" -gt 0 ]; then
+  if [ $((DS_COUNT % 1)) -eq 0 ] && [ "$DS_COUNT" -gt 0 ]; then
     echo "Clearing HuggingFace cache after ${DS_COUNT} datasets..."
     rm -rf "${HF_HOME:-${HOME}/.cache/huggingface}/hub"
     rm -rf "${HF_HOME:-${HOME}/.cache/huggingface}/lerobot"
