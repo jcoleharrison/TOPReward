@@ -17,28 +17,28 @@ FAILED_DATASETS=()
 
 DATASETS=(
     RyanPan315464/stack_cube_so101
-    ShishKebab04/toy-in-bowl
-    badwolf256/so101_duck_picker
-    ivlabs/so101_test
-    k1000dai/so101_pick_sushi_from_shinkansen-pi05
-    legalaspro/so101-greenblack-cube-cup-pnp-30hz
-    legalaspro/so101-greenblack-cube-cup-pnp-50hz
-    legalaspro/so101-pnp-crosslane-showcase-60-30hz-v0
-    legalaspro/so101-pnp-crosslane-showcase-60-50hz-v0
-    legalaspro/so101-pnp-microsanity-20-30hz-v0
-    legalaspro/so101-pnp-microsanity-20-50hz-v0
-    legalaspro/so101-ros-physical-ai-test
-    lt-s/pick_one_block_v30
-    marc-olivier-f/grab_cube_1
-    marc-olivier-f/grab_cube_2
-    marc-olivier-f/grab_cube_3
-    miladherfeh/record-feb-10-python-2
-    miladherfeh/record-feb12-final
-    puheliang/lerobot_phl_grab_box_v2
-    sreetz-nv/so101_teleop_vials_to_tray_camera_tweak
-    sreetz-nv/so101_teleop_vials_to_tray_more_dr
-    supreme-helix/act-ring-on-pole
-    vvrs/so101-pick-place
+    # ShishKebab04/toy-in-bowl
+    # badwolf256/so101_duck_picker
+    # ivlabs/so101_test
+    # k1000dai/so101_pick_sushi_from_shinkansen-pi05
+    # legalaspro/so101-greenblack-cube-cup-pnp-30hz
+    # legalaspro/so101-greenblack-cube-cup-pnp-50hz
+    # legalaspro/so101-pnp-crosslane-showcase-60-30hz-v0
+    # legalaspro/so101-pnp-crosslane-showcase-60-50hz-v0
+    # legalaspro/so101-pnp-microsanity-20-30hz-v0
+    # legalaspro/so101-pnp-microsanity-20-50hz-v0
+    # legalaspro/so101-ros-physical-ai-test
+    # lt-s/pick_one_block_v30
+    # marc-olivier-f/grab_cube_1
+    # marc-olivier-f/grab_cube_2
+    # marc-olivier-f/grab_cube_3
+    # miladherfeh/record-feb-10-python-2
+    # miladherfeh/record-feb12-final
+    # puheliang/lerobot_phl_grab_box_v2
+    # sreetz-nv/so101_teleop_vials_to_tray_camera_tweak
+    # sreetz-nv/so101_teleop_vials_to_tray_more_dr
+    # supreme-helix/act-ring-on-pole
+    # vvrs/so101-pick-place
 )
 
 # Common overrides applied to every run
