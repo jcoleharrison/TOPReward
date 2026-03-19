@@ -16,30 +16,255 @@ set -uo pipefail
 FAILED_DATASETS=()
 
 DATASETS=(
-    # RyanPan315464/stack_cube_so101
-    # ShishKebab04/toy-in-bowl
-    SharkDan/so100_test_f3c
-    # badwolf256/so101_duck_picker
-    # ivlabs/so101_test
-    # k1000dai/so101_pick_sushi_from_shinkansen-pi05
-    # legalaspro/so101-greenblack-cube-cup-pnp-30hz
-    # legalaspro/so101-greenblack-cube-cup-pnp-50hz
-    # legalaspro/so101-pnp-crosslane-showcase-60-30hz-v0
-    # legalaspro/so101-pnp-crosslane-showcase-60-50hz-v0
-    # legalaspro/so101-pnp-microsanity-20-30hz-v0
-    # legalaspro/so101-pnp-microsanity-20-50hz-v0
-    # legalaspro/so101-ros-physical-ai-test
-    # lt-s/pick_one_block_v30
-    # marc-olivier-f/grab_cube_1
-    # marc-olivier-f/grab_cube_2
-    # marc-olivier-f/grab_cube_3
-    # miladherfeh/record-feb-10-python-2
-    # miladherfeh/record-feb12-final
-    # puheliang/lerobot_phl_grab_box_v2
-    # sreetz-nv/so101_teleop_vials_to_tray_camera_tweak
-    # sreetz-nv/so101_teleop_vials_to_tray_more_dr
-    # supreme-helix/act-ring-on-pole
-    # vvrs/so101-pick-place
+  00ri/so100_battery
+  1909398036ljy/so100_test
+  1lyz123576/so101_test
+  3351989175qq/so100_test5
+  AK51/so100_test5
+  Aaron757/so100_test7
+  Aayush1104/Lego_Place_Block_On_Another
+  AkibaGeek/so100_test
+  AndrejOrsula/lerobot_double_ball_stacking_random
+  Ashwin7/so101_test_20250601_184631
+  Askel1419/so101_3obj_3cam
+  Atsushi-S/so100_test
+  Bartm3/dice3
+  BasedLukas/so101_temp
+  Benluncy/so100_test
+  BobBobbson/so100_First_Gripper_Test
+  BranoSandy/so100_test_1
+  BranoSandy/so100_test_cap2
+  CarolinePascal/plug_socket_mixed
+  Cidoyi/so100_0
+  Cidoyi/so100_00000
+  Cornito/so101_chess12
+  Cornito/so101_chess17
+  DAbraham/5Position
+  DD99to5/so100_blocktest2
+  DD99to5/so100_test
+  Dangvi/so100_dataset
+  DanqingZ/new_tic_tac_toe_4_06182025
+  DanqingZ/pick_pink_1
+  DavidYeh0709/so100_david_0610_3
+  DorayakiLin/so100_pick_cube_in_box
+  EGLima/so100_test
+  Ethan208/so100_test
+  Gano007/so100_gano
+  Haribot099/SO101_3_cameras
+  HarrisonLee24/so100_test
+  InfiH/so100_test
+  JackLiuX/so100_test_candy
+  Jeevesh2009/so101_dummy1_test
+  JimmyPeng02/so100_test_6
+  Jinheng0130/Look
+  JongwonP/so101_test2
+  KeisukeSato1024/so101_pp_green_box_2cam
+  Kento2001/so100_test4
+  Kento2001/so100_test5
+  Kodstok/so100_test
+  Kunalmod/so101_test
+  LeRobot-worldwide-hackathon/173-Solo_Performer-so101_biowaste_final_test
+  Loki0929/so100_lan
+  Matinity2/datasettest2
+  MrAnton/so101_test
+  PearlWhite/so101_boll
+  PearlWhite/so101_test
+  QiGuaiOu/so100_test_v2
+  RASPIAUDIO/so100_test4
+  RaulSaya/Bylogic0
+  RaulSaya/bylogic1
+  RaulSaya/so101_pickandplacebylogic
+  ReubenLim/so101_ball_in_cup
+  Rorschach4153/so101_30_fold
+  Rorschach4153/so101_60_new
+  SGQA/so100_test
+  Selinaliu1030/egg_0806
+  Selinaliu1030/test_now
+  SharkDan/so100_test_f3c
+  ShockleyWong/so100_test332
+  Snaijggid/grabs_yellow_duck_rrg
+  Thorns07/so100_test
+  Thorns07/so100_test_diffusion_grasp
+  Trelis/so100_test2
+  TzuShian/so100_chess_test2
+  TzuShian/so100_chess_test3
+  UCleQmAR/so101_data2
+  VoicAndrei/so100_cubes_noaptea_companiilor
+  Waykzen/raju2
+  Xiewei1211/so100_test1
+  YasmineMakni/so100_cam
+  ZHUZHUXIADDD/so100_test
+  Zoratt/so100_test
+  aaronsu11/so100_pick
+  acrampette/so100test
+  ahad-j/chess-b5-to-b6
+  ahad-j/chess-b5-to-c7
+  alexis779/so100_ball_cup
+  amrltqt/so100_test
+  andlyu/newiii_clean_many_cc
+  arulloomba/so100_test
+  asafxrev/so100_jenga_box_may24b_two_cameras
+  ataglem/so100_test5
+  b-sky-lab/act_so101_pick_boat
+  b-sky-lab/act_so101_pick_white_02
+  bap13/so101_test
+  baptiste-04/so100_test_v6
+  bensprenger/chess_game_001_blue_stereo
+  bensprenger/final_final_right_arm_test_v1
+  bjb7/so101_berm_build_test_1
+  bjb7/so101_berm_build_test_2
+  blanchon/play_orange12
+  burgalon/so100_test
+  bursomi/so101_test
+  campa-rabb/so100_test
+  crabarca/so101_test5
+  cyoung96/so100_tennis_balls
+  cyoung96/so100_test
+  danielritchie/so101_test3
+  degregor69/s100_test_2
+  dulics/so100_hellolerobot
+  dweiQAQ/so101_test_2
+  ecoqba/so100_test1
+  edgarkim/so100_test
+  emmanuel-v/so101_test
+  erlingling/so101_test
+  fbeltrao/so101_unplug_cable_2
+  furkanbsk/revel_merged_test
+  ganker5/so100_color_0328
+  gaoxmai/so100_v1
+  gerotropic/so101_pnp
+  goffiojc/so100_isa
+  gokulp01/ae598_main1
+  guanfengliu/grab_brush_diff_bin_orient2
+  gxy1111/so100_pen
+  hkphoooey/throw_stuffie
+  hoon-shin/so100_basketball
+  howardat666/so101_test
+  howld/so100_test
+  hrhraj/25513_bbox_dataset
+  huihui060124/so101_test
+  huihui060124/so101_test_50move
+  huyouare/so100_test
+  igaewa/so100_test_v2
+  ilBiondo06/so100_ball_A3
+  isadev/bougies2
+  isadev/bougies3
+  jakmilller/octopus_data
+  jccj/shape_matching_u
+  jiajun001/eraser00_2
+  joaoocruz00/so100_
+  joooonhocho/so100_doll_in_bowl_2
+  joooonhocho/so100_test_2
+  julyfun/so100_pick_and_place_v3_50
+  juni3227/so100_test
+  k1000dai/so101_pick_2_color_cube_and_put-smolvla
+  kaiserbuffle/hanoi
+  kami-LightYagami/so100_test
+  kami-LightYagami/so100_test_6.17_2
+  kantine/flip_A2
+  kevin-nd/so100_test_1
+  kkurzweil/so100_test_v002
+  kumarhans/defaultPls
+  kumarhans/new_test_5
+  kyomangold/so100_test
+  legalaspro/so101-greenblack-cube-cup-pnp-30hz
+  lime66/so100_test
+  lirislab/clear_square
+  lirislab/clear_square_orig
+  liuhuanjim013/so100_block
+  lizi178119985/so100_jia
+  lorasad/so100_three_cameras_dataset
+  lsrsir/so100_test
+  lt-s/rsj2025_train_lift_the_stacked_blue_dish_and_set_it_down_on_the_table
+  luke250305/play_dice_250311.1
+  lzy0623/so100_three_dataset5
+  manfye/so100_test1
+  marc-olivier-f/grab_cube_2
+  marioblz/so101_test16
+  marioblz/so101_test17
+  masato-ka/so100_cutlery_handling
+  mathieutk/so100_gob1
+  mathieutk/so100_gobc
+  meetrais/so100_test
+  mfyu/so101_white_box
+  miladherfeh/record-feb12-final
+  neka-nat/snack_feeder_test
+  nguyen-v/so100_test_white_plug
+  nhorner/chess_a8_to_d8
+  nicholasluschaeffler/so101_test
+  noorzamri86/so100_test
+  odellus/so100_grasp
+  odellus/so100_test
+  orsoromeo/so101_pick_and_place
+  pangdingjack/so100_test
+  paszea/so100_test
+  paulinus/so100_test
+  pdd46465/so101_test3
+  peerlesssa/so100_test-1
+  pierfabre/CowCleanRandom
+  pietroom/holdthis
+  pranavsaroha/so100_med_cubes_0608_test
+  produc-xuan/so100_guess-who_24_new
+  produc-xuan/so100_guess_who_without_videos
+  provac/so100_test
+  psg777/fixed
+  psg777/glue1
+  ptizzza/so101_pompom1
+  qiujun/so101_test_v2
+  qng95/so100_test
+  ricram2/this_is_my_test
+  roboticshack/team-7-right-arm-grasp-tape
+  rshoff/lerobot
+  rshoff/so101_test
+  rshoff/so101_test_2
+  ryanpennings/so100_pegcrate_c2
+  salhotra/so100_wrist_test1
+  sbyang19/so100_test_marker
+  seonixx/so100_test_v3
+  sergiov2000/so100_ball_leader_40
+  shawntan72/pick_and_place_pill_bottle_1
+  shawntan72/pick_and_place_pill_bottle_2
+  simiken1234/so100_test999
+  simjh96/so101_test
+  sincostangerines/purple_dice
+  slowturtle99/so100_dataset_2
+  slowturtle99/so100_pick_place
+  smartrichard/so101_test2
+  speedyyoshi/so100_grasp_pink_block
+  squareoctopus/so101_dataset4
+  sshh11/so100_orange_50ep_2cam_2
+  sucrammal/plant_pour_data_again
+  sunq/so101_lego
+  szfforever/so101_60hz
+  tcccorp/deuxieme_test
+  tcccorp/premier_test
+  tiago-marques/so100_test
+  un1c0rnio/so101_box_pencil2
+  un1c0rnio/so101_box_pencil4
+  vednot25t/so100_test
+  vicwu666/so100_test3
+  wannrrr/so100_grab_test
+  wcode/so100_put_pen_50
+  wcode/so100_test_2
+  wonhchoi/so100_test
+  xnny/so100_test
+  xnny/so100_test_0425a
+  xnny/so100_test_0426c
+  yadunund/so100_test
+  yingliu-data/so101_Da_Pinchi_draw
+  yingliu-data/so101_da_pinchi
+  youliangtan/so100_test7
+  yuzhous/so101_elevator_2ndfloor
+  yuzhous/so101_elevator_5thfloor
+  yycgreentea/so100_test
+  yyiiii/so101_test2
+  zacapa/SO101_AVE_03
+  zaidyzahar/IKMKL
+  zheng6677/new_so101_test1
+  zijianaaaa/so100_test
+  zlj666/so101_test2
+  zxjessica/rum_test
+  zxjessica/rum_test_phone
 )
 
 # Common overrides applied to every run
@@ -61,7 +286,6 @@ for ds in "${DATASETS[@]}"; do
   # Clear HuggingFace / LeRobot cache every 5 datasets to free disk space
   if [ $((DS_COUNT % 1)) -eq 0 ] && [ "$DS_COUNT" -gt 0 ]; then
     echo "Clearing HuggingFace cache after ${DS_COUNT} datasets..."
-    rm -rf "${HF_HOME:-${HOME}/.cache/huggingface}/hub"
     rm -rf "${HF_HOME:-${HOME}/.cache/huggingface}/lerobot"
     rm -rf "${HF_HOME:-${HOME}/.cache/huggingface}/datasets"
   fi
