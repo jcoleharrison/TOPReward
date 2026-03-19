@@ -17,7 +17,7 @@ FAILED_DATASETS=()
 
 DATASETS=(
     RyanPan315464/stack_cube_so101
-    # ShishKebab04/toy-in-bowl
+    ShishKebab04/toy-in-bowl
     # badwolf256/so101_duck_picker
     # ivlabs/so101_test
     # k1000dai/so101_pick_sushi_from_shinkansen-pi05
