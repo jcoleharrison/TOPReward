@@ -33,6 +33,8 @@ prediction:
   use_subsampled_video: false  # If true, use subsampled video for TOPReward computation
   use_video_input: true    # If true (Gemini only), send frames as video. If false, send as individual images
   add_chat_template: false # If true (Qwen only), wrap instruction prompt with chat template during scoring
+  continue_on_error: false # If true, skip episodes that fail instead of crashing
+  predict_last_n_prefixes: null # If set, only predict for the last N prefix lengths (e.g., 3)
 
 hydra:
   # mode: MULTIRUN # comment this if you don't want to sweep
