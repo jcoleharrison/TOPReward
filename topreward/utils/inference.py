@@ -168,6 +168,7 @@ def compute_instruction_reward_on_fewshot_input(
     use_subsampled_video: bool = False,
     use_video_input: bool = True,
     add_chat_template: bool = False,
+    predict_last_n_prefixes: int | None = None,
 ) -> InstructionRewardRecord:
     """Compute instruction reward for a single few-shot input.
 
@@ -234,12 +235,14 @@ def compute_instruction_reward_on_fewshot_input(
         "use_video_description": use_video_description,
     }
 
-    # Check if client supports use_video_input parameter (Gemini-specific)
+    # Check if client supports optional parameters
     sig = inspect.signature(client.compute_instruction_rewards_for_prefixes)
     if "use_video_input" in sig.parameters:
         kwargs["use_video_input"] = use_video_input
     if "add_chat_template" in sig.parameters:
         kwargs["add_chat_template"] = add_chat_template
+    if "predict_last_n_prefixes" in sig.parameters and predict_last_n_prefixes is not None:
+        kwargs["predict_last_n_prefixes"] = predict_last_n_prefixes
 
     logger.info(f"Example {idx}/{total}: Computing instruction rewards for {len(frames)} frames with {kwargs['num_samples']} prefix samples...")
     result = client.compute_instruction_rewards_for_prefixes(**kwargs)
@@ -285,6 +288,8 @@ def compute_instruction_reward_on_fewshot_input(
         trajectory_description=(result.trajectory_description if result else None),
         prefix_lengths=result.prefix_lengths if result else None,
         prefix_rewards=result.prefix_rewards if result else None,
+        false_reward=result.false_reward if result else None,
+        prefix_false_rewards=result.prefix_false_rewards if result else None,
     )
     logger.info(f"Example {idx}: Record created, moving to next example")
     return record

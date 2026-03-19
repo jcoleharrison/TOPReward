@@ -279,6 +279,14 @@ class QwenClient(BaseModelClient):
         per_token_log_probs_list = masked_log_probs.detach().cpu().tolist()
         token_ids_list = target_labels[mask].detach().cpu().tolist()
 
+        # Extract " False" logprob from the same forward pass
+        # The logits at the position before "True" contain the distribution
+        # over all next tokens, so we just look up the " False" token ID
+        false_token_id = self.processor.tokenizer.encode(" False", add_special_tokens=False)[0]
+        # Position of the last unmasked logit (where "True" was predicted)
+        last_logit_pos = mask.nonzero(as_tuple=True)[1][-1]
+        false_log_prob = log_probs[0, last_logit_pos, false_token_id].item()
+
         return InstructionRewardResult(
             reward=reward,
             reduction=reduction,
@@ -286,6 +294,7 @@ class QwenClient(BaseModelClient):
             per_token_log_probs=per_token_log_probs_list,
             token_ids=token_ids_list,
             trajectory_description=trajectory_description,
+            false_reward=false_log_prob,
         )
 
     @staticmethod
@@ -333,11 +342,9 @@ class QwenClient(BaseModelClient):
         fps: float = 2.0,
         use_video_description: bool = False,
         add_chat_template: bool = False,
+        predict_last_n_prefixes: int | None = None,
     ) -> InstructionRewardResult:
         """Compute instruction rewards for trajectory prefixes of varying lengths.
-
-        This is useful for analyzing how reward changes as the trajectory progresses,
-        similar to the analysis in the demo script.
 
         Args:
             frames: Full list of trajectory frames.
@@ -346,6 +353,9 @@ class QwenClient(BaseModelClient):
             reduction: Reduction method ("mean" or "sum").
             fps: Frames per second for video input.
             add_chat_template: Whether to wrap the instruction prompt with the chat template.
+            predict_last_n_prefixes: If set, only predict for the last N prefix lengths
+                (e.g., 3 means only run on the 3 longest prefixes). All prefix lengths
+                are still computed for metadata but only the last N get model calls.
 
         Returns:
             InstructionRewardResult with prefix_lengths, prefix_rewards, and normalized_prefix_rewards.
@@ -362,7 +372,12 @@ class QwenClient(BaseModelClient):
         else:
             prefix_lengths = [num_frames]
 
+        # Optionally limit to only the last N prefix lengths
+        if predict_last_n_prefixes is not None:
+            prefix_lengths = prefix_lengths[-predict_last_n_prefixes:]
+
         rewards = []
+        false_rewards = []
         token_counts = []
 
         for length in prefix_lengths:
@@ -376,8 +391,9 @@ class QwenClient(BaseModelClient):
                 add_chat_template=add_chat_template,
             )
             rewards.append(result.reward)
+            false_rewards.append(result.false_reward)
             token_counts.append(result.token_count)
-            logger.info(f"Prefix {length:3d} frames: reward={result.reward:.4f} ({result.token_count} tokens)")
+            logger.info(f"Prefix {length:3d} frames: reward={result.reward:.4f} false={result.false_reward:.4f} ({result.token_count} tokens)")
 
         normalized_rewards = self.normalize_rewards(rewards).tolist()
 
@@ -389,4 +405,6 @@ class QwenClient(BaseModelClient):
             prefix_lengths=list(prefix_lengths),
             prefix_rewards=rewards,
             normalized_prefix_rewards=normalized_rewards,
+            false_reward=false_rewards[-1],
+            prefix_false_rewards=false_rewards,
         )

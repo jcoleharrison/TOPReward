@@ -39,6 +39,8 @@ class InstructionRewardResult:
     prefix_lengths: list[int] | None = None
     prefix_rewards: list[float] | None = None
     normalized_prefix_rewards: list[float] | None = None
+    false_reward: float | None = None
+    prefix_false_rewards: list[float] | None = None
 
     def to_metric_result(self) -> MetricResult:
         """Convert to standard MetricResult format."""
@@ -71,4 +73,8 @@ class InstructionRewardResult:
             d["prefix_rewards"] = self.prefix_rewards
         if self.normalized_prefix_rewards is not None:
             d["normalized_prefix_rewards"] = self.normalized_prefix_rewards
+        if self.false_reward is not None:
+            d["false_reward"] = self.false_reward
+        if self.prefix_false_rewards is not None:
+            d["prefix_false_rewards"] = self.prefix_false_rewards
         return d

@@ -75,6 +75,8 @@ class InstructionRewardRecord:
     original_frames_task_completion_rates: list[int] | None = None
     prefix_lengths: list[int] | None = None
     prefix_rewards: list[float] | None = None
+    false_reward: float | None = None
+    prefix_false_rewards: list[float] | None = None
     error: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
@@ -102,6 +104,10 @@ class InstructionRewardRecord:
             d["prefix_lengths"] = self.prefix_lengths
         if self.prefix_rewards is not None:
             d["prefix_rewards"] = self.prefix_rewards
+        if self.false_reward is not None:
+            d["false_reward"] = self.false_reward
+        if self.prefix_false_rewards is not None:
+            d["prefix_false_rewards"] = self.prefix_false_rewards
         return d
 
 

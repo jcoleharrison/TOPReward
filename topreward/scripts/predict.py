@@ -151,6 +151,8 @@ def main(config: DictConfig) -> None:
     ir_use_video_description = bool(config.prediction.get("use_video_description", False))
     ir_use_subsampled_video = bool(config.prediction.get("use_subsampled_video", False))
     ir_add_chat_template = bool(config.prediction.get("add_chat_template", False))
+    ir_predict_last_n_prefixes_raw = config.prediction.get("predict_last_n_prefixes", None)
+    ir_predict_last_n_prefixes = int(ir_predict_last_n_prefixes_raw) if ir_predict_last_n_prefixes_raw is not None else None
     # Get FPS from dataset, fall back to config override if specified
     ir_fps = data_loader.fps
 
@@ -162,58 +164,71 @@ def main(config: DictConfig) -> None:
         for _ in tqdm(range(resume_from_index), desc="Skipping"):
             data_loader.load_fewshot_input()
 
+    continue_on_error = bool(config.prediction.get("continue_on_error", False))
+    skipped_episodes: list[dict] = []
+
     for offset in tqdm(range(remaining_examples), desc=f"Predicting ({method})"):
         idx = resume_from_index + offset
-        if method == "gvl":
-            ex = data_loader.load_fewshot_input()
-            if mapper is None:
-                raise ValueError("Mapper must be instantiated for gvl method")
-            record = infer_utils.predict_on_fewshot_input(
-                idx,
-                num_examples,
-                ex,
-                client,
-                prompt_template,
-                save_raw,
-                voc_metric,
-                config.dataset.name,
-                temperature=float(config.prediction.get("temperature", 0.0)),
-                mapper=mapper,
-                prompt_phrases=prompt_phrases,
-            )
-            with output_path.open("a", encoding="utf-8") as output_file:
-                output_file.write(json.dumps(record.to_dict(include_images=False), ensure_ascii=False) + "\n")
+        try:
+            if method == "gvl":
+                ex = data_loader.load_fewshot_input()
+                if mapper is None:
+                    raise ValueError("Mapper must be instantiated for gvl method")
+                record = infer_utils.predict_on_fewshot_input(
+                    idx,
+                    num_examples,
+                    ex,
+                    client,
+                    prompt_template,
+                    save_raw,
+                    voc_metric,
+                    config.dataset.name,
+                    temperature=float(config.prediction.get("temperature", 0.0)),
+                    mapper=mapper,
+                    prompt_phrases=prompt_phrases,
+                )
+                with output_path.open("a", encoding="utf-8") as output_file:
+                    output_file.write(json.dumps(record.to_dict(include_images=False), ensure_ascii=False) + "\n")
 
-            # Clear image data to save memory - keep only metadata needed
-            # for aggregation
-            record.example.eval_episode.shuffled_frames = []
-            record.example.eval_episode.starting_frame = None
-            record.example.eval_episode.all_frames = None
-            for ctx_ep in record.example.context_episodes:
-                ctx_ep.shuffled_frames = []
-                ctx_ep.starting_frame = None
-                ctx_ep.all_frames = None
-            record.raw_response = None  # Also clear raw response if saved
+                # Clear image data to save memory - keep only metadata needed
+                # for aggregation
+                record.example.eval_episode.shuffled_frames = []
+                record.example.eval_episode.starting_frame = None
+                record.example.eval_episode.all_frames = None
+                for ctx_ep in record.example.context_episodes:
+                    ctx_ep.shuffled_frames = []
+                    ctx_ep.starting_frame = None
+                    ctx_ep.all_frames = None
+                record.raw_response = None  # Also clear raw response if saved
 
-        else:  # topreward
-            ex = data_loader.load_fewshot_input()
-            record = infer_utils.compute_instruction_reward_on_fewshot_input(
-                idx,
-                num_examples,
-                ex,
-                client,
-                config.dataset.name,
-                reduction=ir_reduction,
-                fps=ir_fps,
-                use_video_description=ir_use_video_description,
-                use_subsampled_video=ir_use_subsampled_video,
-                add_chat_template=ir_add_chat_template,
-            )
-            with output_path.open("a", encoding="utf-8") as output_file:
-                output_file.write(json.dumps(record.to_dict(), ensure_ascii=False) + "\n")
+            else:  # topreward
+                ex = data_loader.load_fewshot_input()
+                record = infer_utils.compute_instruction_reward_on_fewshot_input(
+                    idx,
+                    num_examples,
+                    ex,
+                    client,
+                    config.dataset.name,
+                    reduction=ir_reduction,
+                    fps=ir_fps,
+                    use_video_description=ir_use_video_description,
+                    use_subsampled_video=ir_use_subsampled_video,
+                    add_chat_template=ir_add_chat_template,
+                    predict_last_n_prefixes=ir_predict_last_n_prefixes,
+                )
+                with output_path.open("a", encoding="utf-8") as output_file:
+                    output_file.write(json.dumps(record.to_dict(), ensure_ascii=False) + "\n")
 
-        records.append(record)
+            records.append(record)
+        except Exception as e:
+            if continue_on_error:
+                logger.error(f"Episode {idx} failed, skipping: {e}")
+                skipped_episodes.append({"index": idx, "error": str(e)})
+                continue
+            raise
 
+    if skipped_episodes:
+        logger.warning(f"Skipped {len(skipped_episodes)}/{remaining_examples} episodes due to errors")
     logger.info(f"Wrote {len(records)} records to {output_path}")
 
     # Build summary based on method
@@ -311,6 +326,10 @@ def main(config: DictConfig) -> None:
             "voc_max": max_voc,
             "voc_valid_count": len(voc_scores),
         }
+
+    if skipped_episodes:
+        summary["skipped_episodes"] = skipped_episodes
+        summary["skipped_count"] = len(skipped_episodes)
 
     with (output_dir / f"{model_name_safe}_{starting_time}_summary.json").open("w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)

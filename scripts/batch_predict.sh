@@ -47,6 +47,8 @@ COMMON_OVERRIDES=(
   dataset.num_frames=3
   prediction.eval_all_episodes=true
   prediction.save_raw=true
+  prediction.continue_on_error=true
+  prediction.predict_last_n_prefixes=3
 )
 
 for ds in "${DATASETS[@]}"; do
