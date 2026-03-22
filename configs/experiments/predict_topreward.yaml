@@ -37,7 +37,7 @@ prediction:
   predict_last_n_prefixes: null # If set, only predict for the last N prefix lengths (e.g., 3)
 
 hydra:
-  # mode: MULTIRUN # comment this if you don't want to sweep
+  mode: MULTIRUN # comment this if you don't want to sweep
   run:
     dir: results/
   sweep:

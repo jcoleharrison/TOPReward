@@ -64,6 +64,7 @@ class HuggingFaceDataLoader(BaseDataLoader):
         max_episodes: int | None = None,
         sampling_method: str = "random",
         anchoring: str = "first",
+        root: str | None = None,
     ) -> None:
         super().__init__(
             num_frames=num_frames,
@@ -76,16 +77,22 @@ class HuggingFaceDataLoader(BaseDataLoader):
         self.sampling_method = sampling_method
         self.anchoring = anchoring
 
-        # Ensure v3.0 format (auto-convert from v2.1 if needed)
-        # If converted, skip force_cache_sync since the Hub still has v2.1
-        # and LeRobotDataset would reject the load with BackwardCompatibilityError
-        was_converted = _ensure_v30(dataset_name)
-        force_sync = not was_converted
+        if root is not None:
+            # Local path provided — skip v3.0 conversion and Hub sync
+            logger.info(f"Loading dataset from local path: {root}")
+            self._dataset = LeRobotDataset(dataset_name, root=root, force_cache_sync=False)
+            self.ds_meta = LeRobotDatasetMetadata(dataset_name, root=root, force_cache_sync=False)
+        else:
+            # Ensure v3.0 format (auto-convert from v2.1 if needed)
+            # If converted, skip force_cache_sync since the Hub still has v2.1
+            # and LeRobotDataset would reject the load with BackwardCompatibilityError
+            was_converted = _ensure_v30(dataset_name)
+            force_sync = not was_converted
 
-        # Load dataset once (optimization #1: single dataset instance)
-        logger.info(f"Loading dataset: {dataset_name}")
-        self._dataset = LeRobotDataset(dataset_name, force_cache_sync=force_sync)
-        self.ds_meta = LeRobotDatasetMetadata(dataset_name, force_cache_sync=force_sync)
+            # Load dataset once (optimization #1: single dataset instance)
+            logger.info(f"Loading dataset: {dataset_name}")
+            self._dataset = LeRobotDataset(dataset_name, force_cache_sync=force_sync)
+            self.ds_meta = LeRobotDatasetMetadata(dataset_name, force_cache_sync=force_sync)
 
         # Get total episodes
         self.max_episodes = min(max_episodes or self.ds_meta.total_episodes, self.ds_meta.total_episodes)
