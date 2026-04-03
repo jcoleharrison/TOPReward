@@ -26,6 +26,7 @@ class BaseDataLoader(ABC):
         shuffle: bool = False,
         seed: int = 42,
         sampling_method: str = "random",
+        frame_stride: int | None = None,
     ) -> None:
         self.num_frames = int(num_frames)
         self.num_context_episodes = int(num_context_episodes)
@@ -33,6 +34,7 @@ class BaseDataLoader(ABC):
         self.seed = int(seed)
         self._rng = np.random.default_rng(self.seed)
         self.sampling_method = sampling_method
+        self.frame_stride = int(frame_stride) if frame_stride is not None else None
 
     @abstractmethod
     def load_fewshot_input(self, episode_index: int | None = None) -> FewShotInput:
@@ -92,6 +94,12 @@ class BaseDataLoader(ABC):
             # Select the last num_frames frames from the episode
             start = max(1, total - self.num_frames)
             frames = np.arange(start, total, dtype=int)
+        elif sampling == "stride":
+            # Select every frame_stride-th frame (ignores num_frames)
+            stride = self.frame_stride
+            if stride is None or stride < 1:
+                raise ValueError(f"frame_stride must be a positive integer for stride sampling, got {stride}")
+            frames = np.arange(0, total, stride, dtype=int)
         elif sampling == "gauss":
             mu = total / 2
             sigma = total / 6  # ~99.7% data within [0, total]

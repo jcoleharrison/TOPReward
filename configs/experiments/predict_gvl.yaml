@@ -14,6 +14,8 @@ sampling_method: random  # Frame sampling method: 'random', 'uniform', 'gauss', 
 anchoring: first   # Anchoring method for frame sampling: 'first', 'last', 'middle'
 # Anchoring not applied for method 'topreward'
 
+frame_stride: null  # If set with sampling_method=stride, select every Nth frame
+
 dataset:
   num_context_episodes: 0  # How many in-context episodes to provide (gvl only)
 

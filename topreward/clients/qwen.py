@@ -363,10 +363,13 @@ class QwenClient(BaseModelClient):
         """
 
         num_frames = len(frames)
-        num_samples = min(num_samples, num_frames)
 
-        # Generate uniformly spaced prefix lengths from 2 to full trajectory
-        if num_frames > 2:
+        if num_samples <= 0:
+            # Use every frame as a prefix length (1, 2, ..., num_frames)
+            prefix_lengths = list(range(1, num_frames + 1))
+        elif num_frames > 2:
+            num_samples = min(num_samples, num_frames)
+            # Generate uniformly spaced prefix lengths from 1 to full trajectory
             prefix_lengths = np.linspace(1, num_frames, num_samples, dtype=int)
             prefix_lengths = sorted({int(x) for x in prefix_lengths})
         else:

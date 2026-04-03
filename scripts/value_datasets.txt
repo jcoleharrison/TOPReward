@@ -1,0 +1,7 @@
+# Local paths to LeRobot datasets on Beaker (weka mount).
+# Each line is an absolute path to a dataset directory.
+# The repo ID is inferred from the last two path components (org/dataset_name).
+# Blank lines and lines starting with '#' are ignored.
+
+# Example:
+# /mount/weka/shiruic/datasets/org_name/dataset_name

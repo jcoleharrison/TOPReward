@@ -153,6 +153,7 @@ def main(config: DictConfig) -> None:
     ir_add_chat_template = bool(config.prediction.get("add_chat_template", False))
     ir_predict_last_n_prefixes_raw = config.prediction.get("predict_last_n_prefixes", None)
     ir_predict_last_n_prefixes = int(ir_predict_last_n_prefixes_raw) if ir_predict_last_n_prefixes_raw is not None else None
+    ir_num_prefix_samples = int(config.prediction.get("num_prefix_samples", 15))
     # Get FPS from dataset, fall back to config override if specified
     ir_fps = data_loader.fps
 
@@ -215,6 +216,7 @@ def main(config: DictConfig) -> None:
                     use_subsampled_video=ir_use_subsampled_video,
                     add_chat_template=ir_add_chat_template,
                     predict_last_n_prefixes=ir_predict_last_n_prefixes,
+                    num_prefix_samples=ir_num_prefix_samples,
                 )
                 with output_path.open("a", encoding="utf-8") as output_file:
                     output_file.write(json.dumps(record.to_dict(), ensure_ascii=False) + "\n")

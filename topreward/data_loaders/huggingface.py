@@ -65,12 +65,14 @@ class HuggingFaceDataLoader(BaseDataLoader):
         sampling_method: str = "random",
         anchoring: str = "first",
         root: str | None = None,
+        frame_stride: int | None = None,
     ) -> None:
         super().__init__(
             num_frames=num_frames,
             num_context_episodes=num_context_episodes,
             shuffle=shuffle,
             seed=seed,
+            frame_stride=frame_stride,
         )
         self.dataset_name = dataset_name
         self.camera_index = int(camera_index)

@@ -14,6 +14,8 @@ sampling_method: uniform  # Frame sampling method: 'random', 'uniform', 'gauss',
 anchoring: first   # Anchoring method for frame sampling: 'first', 'last', 'middle'
 # Anchoring not applied for method 'topreward'
 
+frame_stride: null  # If set with sampling_method=stride, select every Nth frame (overrides num_frames)
+
 dataset:
   num_frames: 15
 
@@ -35,6 +37,7 @@ prediction:
   add_chat_template: false # If true (Qwen only), wrap instruction prompt with chat template during scoring
   continue_on_error: false # If true, skip episodes that fail instead of crashing
   predict_last_n_prefixes: null # If set, only predict for the last N prefix lengths (e.g., 3)
+  num_prefix_samples: 15        # Number of uniformly spaced prefix lengths to evaluate (default 15)
 
 hydra:
   mode: MULTIRUN # comment this if you don't want to sweep

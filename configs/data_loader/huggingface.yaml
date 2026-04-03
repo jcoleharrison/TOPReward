@@ -10,3 +10,4 @@ max_episodes: ${dataset.max_episodes}
 sampling_method: ${sampling_method}
 anchoring: ${anchoring}
 root: null
+frame_stride: ${frame_stride}

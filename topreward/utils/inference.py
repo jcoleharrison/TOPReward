@@ -169,6 +169,7 @@ def compute_instruction_reward_on_fewshot_input(
     use_video_input: bool = True,
     add_chat_template: bool = False,
     predict_last_n_prefixes: int | None = None,
+    num_prefix_samples: int = 15,
 ) -> InstructionRewardRecord:
     """Compute instruction reward for a single few-shot input.
 
@@ -229,7 +230,7 @@ def compute_instruction_reward_on_fewshot_input(
     kwargs = {
         "frames": frames,
         "instruction": instruction,
-        "num_samples": 15,
+        "num_samples": num_prefix_samples,
         "reduction": reduction,
         "fps": fps,
         "use_video_description": use_video_description,
