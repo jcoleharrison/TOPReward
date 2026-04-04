@@ -210,11 +210,18 @@ def compute_instruction_reward_on_fewshot_input(
         frames = [ex.eval_episode.starting_frame, *uniformly_spaced_frames]
         instruction = ex.eval_episode.instruction
     else:
-        # Use all frames as-is (starting frame + shuffled frames)
+        # Use frames respecting the sampling method's selection.
+        # original_frames_indices holds the indices chosen by the sampler
+        # (e.g. every 10th frame for stride). If sampling selected a
+        # strict subset, use only those frames in chronological order.
         all_frames = ex.eval_episode.all_frames
         if all_frames is None:
             raise ValueError(f"Episode {ex.eval_episode.episode_index} has no frames (all_frames is None)")
-        frames = all_frames
+        indices = ex.eval_episode.original_frames_indices
+        if indices is not None and len(indices) < len(all_frames):
+            frames = [all_frames[i] for i in indices]
+        else:
+            frames = all_frames
         instruction = ex.eval_episode.instruction
 
     if fps is None:
