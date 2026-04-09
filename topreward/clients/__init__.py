@@ -1,13 +1,10 @@
-"""Model clients package public API."""
+"""Lazy public API for model clients.
 
-from topreward.clients.base import BaseModelClient
-from topreward.clients.gemini import GeminiClient
-from topreward.clients.gemma import GemmaClient
-from topreward.clients.glm import GLMClient
-from topreward.clients.kimi import KimiThinkingClient
-from topreward.clients.molmo import Molmo2Client
-from topreward.clients.openai import OpenAIClient
-from topreward.clients.qwen import QwenClient
+Avoid importing every optional backend dependency at package import time.
+"""
+
+from importlib import import_module
+from typing import Any
 
 __all__ = [
     "BaseModelClient",
@@ -19,3 +16,24 @@ __all__ = [
     "OpenAIClient",
     "QwenClient",
 ]
+
+_EXPORTS = {
+    "BaseModelClient": ("topreward.clients.base", "BaseModelClient"),
+    "GLMClient": ("topreward.clients.glm", "GLMClient"),
+    "GeminiClient": ("topreward.clients.gemini", "GeminiClient"),
+    "GemmaClient": ("topreward.clients.gemma", "GemmaClient"),
+    "KimiThinkingClient": ("topreward.clients.kimi", "KimiThinkingClient"),
+    "Molmo2Client": ("topreward.clients.molmo", "Molmo2Client"),
+    "OpenAIClient": ("topreward.clients.openai", "OpenAIClient"),
+    "QwenClient": ("topreward.clients.qwen", "QwenClient"),
+}
+
+
+def __getattr__(name: str) -> Any:
+    if name not in _EXPORTS:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    module_name, attr_name = _EXPORTS[name]
+    module = import_module(module_name)
+    value = getattr(module, attr_name)
+    globals()[name] = value
+    return value
