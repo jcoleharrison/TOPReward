@@ -13,13 +13,20 @@ from topreward.utils.images import to_pil
 class GLMClient(BaseModelClient):
     """GLM client implementation"""
 
+    PREFIX_CACHE_SUPPORTED = False
+
     def __init__(
         self,
         model_name: str = "zai-org/GLM-4.1V-9B-Thinking",
         rpm: float = 0.0,
         max_input_length: int = 32768,
+        prefix_cache_enabled: bool = False,
     ):
-        super().__init__(rpm=rpm)
+        super().__init__(
+            rpm=rpm,
+            max_input_length=max_input_length,
+            prefix_cache_enabled=prefix_cache_enabled,
+        )
         logger.info(f"Loading GLM model {model_name}...")
         self.model = Glm4vForConditionalGeneration.from_pretrained(
             model_name,

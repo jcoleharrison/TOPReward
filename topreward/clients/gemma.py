@@ -13,8 +13,15 @@ from topreward.utils.images import to_pil
 class GemmaClient(BaseModelClient):
     """Client for Gemma 3 image-text model (conditional generation)."""
 
-    def __init__(self, model_name: str = "google/gemma-3-4b-it", rpm: float = 0.0):
-        super().__init__(rpm=rpm)
+    PREFIX_CACHE_SUPPORTED = False
+
+    def __init__(
+        self,
+        model_name: str = "google/gemma-3-4b-it",
+        rpm: float = 0.0,
+        prefix_cache_enabled: bool = False,
+    ):
+        super().__init__(rpm=rpm, prefix_cache_enabled=prefix_cache_enabled)
         logger.info(f"Loading Gemma model {model_name} ...")
         self.model = Gemma3ForConditionalGeneration.from_pretrained(model_name, device_map="auto").eval()
         self.model_name = model_name

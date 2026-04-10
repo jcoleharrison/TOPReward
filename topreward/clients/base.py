@@ -32,16 +32,28 @@ class BaseModelClient(ABC):
     244x244 PNG base64 strings for multimodal APIs.
     """
 
-    def __init__(self, *, rpm: float = 0.0, max_input_length: int = 32000) -> None:
+    PREFIX_CACHE_SUPPORTED = False
+
+    def __init__(
+        self,
+        *,
+        rpm: float = 0.0,
+        max_input_length: int = 32000,
+        prefix_cache_enabled: bool = False,
+    ) -> None:
         """Initialize the base model client.
 
         Args:
             rpm: Requests per minute rate limit (0.0 for no limit).
             max_input_length: Maximum input length for the model.
+            prefix_cache_enabled: Whether prefix cache is enabled.
         """
         self.rpm = float(rpm)
         self.max_input_length = max_input_length
         self.model_name: str = ""
+        if prefix_cache_enabled and not self.PREFIX_CACHE_SUPPORTED:
+            raise NotImplementedError(f"{self.__class__.__name__} does not support prefix cache")
+        self.prefix_cache_enabled = prefix_cache_enabled
         # Persist a limiter instance so the rolling window spans calls.
         self._rate_limiter: RateLimiter | None = RateLimiter(max_calls=self.rpm, period=SECS_PER_MIN) if self.rpm > 0.0 else None
 
@@ -210,6 +222,12 @@ class BaseModelClient(ABC):
     ) -> "InstructionRewardResult":
         """Compute instruction rewards for trajectory prefixes. Override in subclasses."""
         raise NotImplementedError("compute_instruction_rewards_for_prefixes not implemented for this client")
+
+    def prefix_cache_metadata(self) -> dict[str, Any]:
+        return {
+            "supported": self.PREFIX_CACHE_SUPPORTED,
+            "enabled": self.prefix_cache_enabled,
+        }
 
     @abstractmethod
     def _generate_from_events(self, events: list[Event], temperature: float) -> str:  # pragma: no cover - interface only

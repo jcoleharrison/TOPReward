@@ -24,13 +24,20 @@ from topreward.utils.images import to_pil
 class Molmo2Client(QwenClient):
     """Client for Molmo2-8B model with instruction reward support."""
 
+    PREFIX_CACHE_SUPPORTED = True
+
     def __init__(
         self,
         model_name: str = "allenai/Molmo2-8B",
         rpm: float = 0.0,
         max_input_length: int = 32768,
+        prefix_cache_enabled: bool = True,
     ):
-        super(QwenClient, self).__init__(rpm=rpm)
+        super(QwenClient, self).__init__(
+            rpm=rpm,
+            max_input_length=max_input_length,
+            prefix_cache_enabled=prefix_cache_enabled,
+        )
 
         logger.info(f"Loading Molmo2 model {model_name}...")
         self.model = AutoModelForImageTextToText.from_pretrained(
@@ -46,7 +53,6 @@ class Molmo2Client(QwenClient):
         )
         logger.info(f"Molmo2 processor type: {type(self.processor)}")
         self.model_name = model_name
-        self.max_input_length = max_input_length
 
     def _generate_from_events(self, events: list[Event], temperature: float) -> str:
         """Generate response from provider-agnostic events."""

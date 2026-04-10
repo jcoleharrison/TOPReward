@@ -90,6 +90,7 @@ def main(config: DictConfig) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     model_name_safe = client.model_name.replace("/", "_")
     starting_time = datetime.now().isoformat().replace(":", "-")
+    prefix_cache_metadata = client.prefix_cache_metadata()
     resume_from_path = config.prediction.get("resume_from_path")
     resume_from_index = config.prediction.get("resume_from_index")
     if resume_from_index is not None:
@@ -156,6 +157,8 @@ def main(config: DictConfig) -> None:
     ir_num_prefix_samples = int(config.prediction.get("num_prefix_samples", 15))
     # Get FPS from dataset, fall back to config override if specified
     ir_fps = data_loader.fps
+    if method != "topreward" or ir_use_video_description or ir_add_chat_template:
+        prefix_cache_metadata["enabled"] = False
 
     if remaining_examples <= 0:
         logger.warning("No remaining examples to process after applying resume_from_index.")
@@ -332,6 +335,8 @@ def main(config: DictConfig) -> None:
     if skipped_episodes:
         summary["skipped_episodes"] = skipped_episodes
         summary["skipped_count"] = len(skipped_episodes)
+
+    summary["prefix_cache"] = prefix_cache_metadata
 
     with (output_dir / f"{model_name_safe}_{starting_time}_summary.json").open("w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)

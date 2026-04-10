@@ -1,4 +1,3 @@
-import os
 import time
 import numpy as np
 from topreward.clients.qwen import QwenClient
@@ -13,12 +12,12 @@ def main():
     instruction = "Pick up the block."
     
     print("\n[Warming up models & cache...]")
-    os.environ["TOPREWARD_QWEN_PREFIX_CACHE"] = "0"
+    client.prefix_cache_enabled = False
     client.compute_instruction_rewards_for_prefixes(frames[:5], instruction, num_samples=1)
     
     # We must explicitly call 15 prefixes to see the loop scaling.
     print("\n[Running Uncached...]")
-    os.environ["TOPREWARD_QWEN_PREFIX_CACHE"] = "0"
+    client.prefix_cache_enabled = False
     start_uncached = time.time()
     # By passing frames to prefix lengths automatically evenly spanned
     # We force the model to evaluate incrementally larger chunks.
@@ -30,7 +29,7 @@ def main():
     t_uncached = time.time() - start_uncached
     
     print("\n[Running Cached...]")
-    os.environ["TOPREWARD_QWEN_PREFIX_CACHE"] = "1"
+    client.prefix_cache_enabled = True
     start_cached = time.time()
     res_cached = client.compute_instruction_rewards_for_prefixes(
         frames=frames, 

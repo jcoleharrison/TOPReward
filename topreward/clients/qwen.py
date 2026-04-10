@@ -1,4 +1,3 @@
-import os
 from collections.abc import Sequence
 from typing import cast
 
@@ -25,15 +24,20 @@ from topreward.utils.images import to_pil
 
 class QwenClient(BaseModelClient):
     ALIGNED_VIDEO_SAMPLE_FPS = 2.0
-    ENABLE_PREFIX_KV_CACHE_ENV = "TOPREWARD_QWEN_PREFIX_CACHE"
+    PREFIX_CACHE_SUPPORTED = True
 
     def __init__(
         self,
         model_name: str = "Qwen/Qwen3-VL-8B-Instruct",
         rpm: float = 0.0,
         max_input_length: int = 32768,
+        prefix_cache_enabled: bool = True,
     ):
-        super().__init__(rpm=rpm)
+        super().__init__(
+            rpm=rpm,
+            max_input_length=max_input_length,
+            prefix_cache_enabled=prefix_cache_enabled,
+        )
         self.model_name = model_name
         self.model_config = AutoConfig.from_pretrained(model_name)
         model_cls = self._resolve_model_class(self.model_config)
@@ -56,7 +60,6 @@ class QwenClient(BaseModelClient):
                 "TOPReward Qwen client requires a vision-capable Qwen model for instruction scoring."
             )
         logger.info(type(self.processor))
-        self.max_input_length = max_input_length
 
     @staticmethod
     def _resolve_model_class(config) -> type:
@@ -83,10 +86,6 @@ class QwenClient(BaseModelClient):
             return Qwen3_5MoeForConditionalGeneration
 
         return None
-
-    @classmethod
-    def _prefix_cache_enabled(cls) -> bool:
-        return os.getenv(cls.ENABLE_PREFIX_KV_CACHE_ENV, "0") == "1"
 
     @staticmethod
     def _aligned_video_indices(
@@ -836,7 +835,7 @@ class QwenClient(BaseModelClient):
                 raw_total_frames=length,
             )
 
-        if not self._prefix_cache_enabled() or use_video_description or add_chat_template:
+        if not self.prefix_cache_enabled or use_video_description or add_chat_template:
             for length in prefix_lengths:
                 result = _compute_uncached_for_length(length)
                 rewards.append(result.reward)

@@ -14,8 +14,20 @@ from topreward.utils.images import to_pil
 class KimiThinkingClient(BaseModelClient):
     """Client for Kimi Thinking VL model."""
 
-    def __init__(self, model_name: str = "moonshotai/Kimi-VL-A3B-Thinking-2506", rpm: float = 0.0, max_input_length: int = 32768):
-        super().__init__(rpm=rpm)
+    PREFIX_CACHE_SUPPORTED = False
+
+    def __init__(
+        self,
+        model_name: str = "moonshotai/Kimi-VL-A3B-Thinking-2506",
+        rpm: float = 0.0,
+        max_input_length: int = 32768,
+        prefix_cache_enabled: bool = False,
+    ):
+        super().__init__(
+            rpm=rpm,
+            max_input_length=max_input_length,
+            prefix_cache_enabled=prefix_cache_enabled,
+        )
         logger.info(f"Loading Kimi Thinking model {model_name} ...")
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
