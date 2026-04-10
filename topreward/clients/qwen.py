@@ -7,7 +7,14 @@ import torch
 import torch.nn.functional as F
 from loguru import logger
 from qwen_vl_utils import process_vision_info
-from transformers import AutoProcessor, Qwen3VLForConditionalGeneration
+from transformers import (
+    AutoConfig,
+    AutoProcessor,
+    Qwen3_5ForConditionalGeneration,
+    Qwen3_5MoeForConditionalGeneration,
+    Qwen3VLForConditionalGeneration,
+    Qwen3VLMoeForConditionalGeneration,
+)
 
 from topreward.clients.base import BaseModelClient
 from topreward.metrics.instruction_reward import InstructionRewardResult
@@ -27,11 +34,55 @@ class QwenClient(BaseModelClient):
         max_input_length: int = 32768,
     ):
         super().__init__(rpm=rpm)
-        self.model = Qwen3VLForConditionalGeneration.from_pretrained(model_name, torch_dtype="auto", device_map="auto", attn_implementation="flash_attention_2")
-        self.processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
-        logger.info(type(self.processor))
         self.model_name = model_name
+        self.model_config = AutoConfig.from_pretrained(model_name)
+        model_cls = self._resolve_model_class(self.model_config)
+        if model_cls is None:
+            raise ValueError(
+                "Unsupported Qwen model architecture "
+                f"('{self.model_config.model_type}'). "
+                "Supported model types are: qwen3_vl, qwen3_vl_moe, qwen3_5, and qwen3_5_moe."
+            )
+        self.model = model_cls.from_pretrained(
+            model_name,
+            torch_dtype="auto",
+            device_map="auto",
+            attn_implementation="flash_attention_2",
+        )
+        self.processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=True)
+        if not hasattr(self.processor, "video_processor"):
+            raise ValueError(
+                f"Model '{model_name}' does not expose a video processor through AutoProcessor; "
+                "TOPReward Qwen client requires a vision-capable Qwen model for instruction scoring."
+            )
+        logger.info(type(self.processor))
         self.max_input_length = max_input_length
+
+    @staticmethod
+    def _resolve_model_class(config) -> type:
+        """Return the best Qwen model class for the detected model type/architecture."""
+        qwen_model_type = getattr(config, "model_type", "").lower()
+        qwen_model_archs = [arch.lower() for arch in getattr(config, "architectures", [])]
+
+        if qwen_model_type == "qwen3_vl":
+            return Qwen3VLForConditionalGeneration
+        if qwen_model_type == "qwen3_vl_moe":
+            return Qwen3VLMoeForConditionalGeneration
+        if qwen_model_type == "qwen3_5":
+            return Qwen3_5ForConditionalGeneration
+        if qwen_model_type == "qwen3_5_moe":
+            return Qwen3_5MoeForConditionalGeneration
+
+        if "qwen3vlforconditionalgeneration" in qwen_model_archs:
+            return Qwen3VLForConditionalGeneration
+        if "qwen3vlmoeforconditionalgeneration" in qwen_model_archs:
+            return Qwen3VLMoeForConditionalGeneration
+        if "qwen3_5forconditionalgeneration" in qwen_model_archs:
+            return Qwen3_5ForConditionalGeneration
+        if "qwen3_5moeforconditionalgeneration" in qwen_model_archs:
+            return Qwen3_5MoeForConditionalGeneration
+
+        return None
 
     @classmethod
     def _prefix_cache_enabled(cls) -> bool:
