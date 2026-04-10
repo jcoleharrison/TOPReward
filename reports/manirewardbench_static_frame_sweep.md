@@ -76,15 +76,24 @@ Interpretation:
 |---|---|---:|---:|---:|---:|---:|
 | 8B | `ai2_lerobot` | 0.9503 | 0.9870 | -0.0988 | -9.2375 | 0.9870 |
 | 32B | `ai2_lerobot` | 0.8944 | 0.0506 | -0.0192 | -6.0500 | 0.0506 |
+| 30B-A3B | `ai2_lerobot` | 0.9516 | 0.8543 | -0.6686 | -8.5125 | 0.8543 |
+| 3.5-35B | `ai2_lerobot` | 0.4417 | 0.1515 | -6.1750 | -7.0500 | 0.1515 |
+| 3.5-9B | `ai2_lerobot` | -0.6647 | -0.9111 | -2.6313 | -2.5625 | -0.9111 |
 | 8B | `ai2_franka` | 0.9618 | 0.9912 | -3.9266 | -6.7812 | 0.9912 |
 | 32B | `ai2_franka` (reannotated, 10 FPS) | 0.5954 | -0.5701 | -0.4109 | -4.2562 | -0.5701 |
+| 30B-A3B | `ai2_franka` (reannotated, 10 FPS) | 0.9560 | 0.9206 | -1.2887 | -7.2781 | 0.9206 |
+| 3.5-35B | `ai2_franka` (reannotated, 10 FPS) | 0.1054 | 0.1952 | -6.9250 | -6.4250 | 0.1952 |
+| 3.5-9B | `ai2_franka` (reannotated, 10 FPS) | -0.1501 | -0.8042 | -2.9281 | -3.8875 | -0.8042 |
 | 8B | `ai2_bimanual_yam` | 0.8318 | 0.4901 | -0.3541 | -1.2773 | 0.4901 |
 | 32B | `ai2_bimanual_yam` | 0.7115 | -0.7516 | -0.2982 | -5.5000 | -0.7516 |
+| 30B-A3B | `ai2_bimanual_yam` | 0.9459 | 0.9439 | -0.8402 | -2.3969 | 0.9439 |
+| 3.5-35B | `ai2_bimanual_yam` | 0.2832 | 0.7601 | -5.6750 | -5.1250 | 0.7601 |
+| 3.5-9B | `ai2_bimanual_yam` | -0.8785 | -0.9681 | -2.4312 | -2.8438 | -0.9681 |
 | 8B | `ai2_single_yam` | 0.9456 | 0.9845 | -3.9219 | -5.1063 | 0.9845 |
 | 32B | `ai2_single_yam` | 0.9093 | -0.4949 | -0.1040 | -5.5750 | -0.4949 |
-| 30B | `ai2_franka` | 0.9555 | 0.9444 | -2.1730 | -5.0875 | 0.9444 |
-| 3.5-35B | `ai2_franka` | 0.0946 | 0.1768 | -7.0750 | -6.7750 | 0.1768 |
-| 3.5-9B | `ai2_franka` | -0.0421 | -0.3168 | -3.3656 | -3.6750 | -0.3168 |
+| 30B-A3B | `ai2_single_yam` | 0.9659 | 0.9750 | -3.0562 | -3.4891 | 0.9750 |
+| 3.5-35B | `ai2_single_yam` | 0.2910 | 0.7223 | -6.5000 | -5.8000 | 0.7223 |
+| 3.5-9B | `ai2_single_yam` | -0.7906 | -0.8996 | -2.5719 | -2.7344 | -0.8996 |
 
 ## Main Findings
 
@@ -184,12 +193,13 @@ For the broader ManiRewardBench sweep:
 - `ai2_franka` combines two failure modes: a label-semantic mismatch in the original
   task wording and a separate short-video length bias in the static-frame setting
 
-### 5. Qwen3.5-family behavior on `ai2_franka` (5-episode runs, default FPS)
+### 5. Qwen3.5-family behavior on all splits (5-episode runs)
 
-- `Qwen/Qwen3-VL-30B-A3B-Instruct` still exhibits strong positive static monotonicity despite high real VOC.
-- `Qwen/Qwen3.5-35B-A3B` behaves similarly to the 30B variant on the measured metrics.
-- `Qwen/Qwen3.5-9B` has near-zero real VOC and negative static VOC/monotonicity in this run, but very poor real reward.
-- These 3.5-family results are all on the original `ai2_franka` split without the table-task reannotation and at default sampling settings.
+- `Qwen/Qwen3-VL-30B-A3B-Instruct` retains strong length bias on `ai2_lerobot`, `ai2_franka` (reannotated), and `ai2_single_yam`; results are mixed on `ai2_bimanual_yam`.
+- `Qwen/Qwen3.5-35B-A3B` is broadly similar: positive static monotonicity on most splits, weak real-video correlation on some splits.
+- `Qwen/Qwen3.5-9B` is negative/flat on static monotonicity for all tested splits, but its real-video signal is poor and unsuitable as a reward model in this configuration.
+
+`ai2_franka` for the 30B-A3B and 3.5-family metrics above used reannotated task names.
 
 ## Artifacts
 
@@ -206,8 +216,17 @@ Per-split summaries:
 - `../instruction_gvl/results/static_frame_ai2_franka_robot_prompt/qwen32b/ai2_franka/summary.json`
 - `../instruction_gvl/results/static_frame_ai2_franka_reannotated/qwen32b/ai2_franka/summary.json`
 - `../instruction_gvl/results/static_frame_ai2_franka_reannotated_10fps/qwen32b/ai2_franka/summary.json`
-- `../instruction_gvl/results/static_frame_ai2_franka_qwen30b_a3b_5ep/qwen30b_a3b/ai2_franka/summary.json`
-- `../instruction_gvl/results/static_frame_ai2_franka_qwen35_35b_a3b_5ep/qwen35_35b_a3b/ai2_franka/summary.json`
-- `../instruction_gvl/results/static_frame_ai2_franka_qwen35_9b_5ep/qwen35_9b/ai2_franka/summary.json`
+- `../instruction_gvl/results/static_frame_ai2_franka_reannotated_new_10fps/qwen30b_a3b/ai2_franka/summary.json`
+- `../instruction_gvl/results/static_frame_ai2_franka_reannotated_new_10fps/qwen35_35b_a3b/ai2_franka/summary.json`
+- `../instruction_gvl/results/static_frame_ai2_franka_reannotated_new_10fps/qwen35_9b/ai2_franka/summary.json`
+- `../instruction_gvl/results/static_frame_ai2_lerobot_new/qwen30b_a3b/ai2_lerobot/summary.json`
+- `../instruction_gvl/results/static_frame_ai2_lerobot_new/qwen35_35b_a3b/ai2_lerobot/summary.json`
+- `../instruction_gvl/results/static_frame_ai2_lerobot_new/qwen35_9b/ai2_lerobot/summary.json`
+- `../instruction_gvl/results/static_frame_ai2_bimanual_yam_new/qwen30b_a3b/ai2_bimanual_yam/summary.json`
+- `../instruction_gvl/results/static_frame_ai2_bimanual_yam_new/qwen35_35b_a3b/ai2_bimanual_yam/summary.json`
+- `../instruction_gvl/results/static_frame_ai2_bimanual_yam_new/qwen35_9b/ai2_bimanual_yam/summary.json`
+- `../instruction_gvl/results/static_frame_ai2_single_yam_new/qwen30b_a3b/ai2_single_yam/summary.json`
+- `../instruction_gvl/results/static_frame_ai2_single_yam_new/qwen35_35b_a3b/ai2_single_yam/summary.json`
+- `../instruction_gvl/results/static_frame_ai2_single_yam_new/qwen35_9b/ai2_single_yam/summary.json`
 
 Raw per-episode outputs are stored alongside each summary as `predictions.jsonl`.
