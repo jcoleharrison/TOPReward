@@ -249,11 +249,7 @@ class QwenClient(BaseModelClient):
         attention_mask = inputs["attention_mask"].to("cuda")
         video_grid_thw = inputs["video_grid_thw"].to("cuda")
         pixel_values_videos = inputs["pixel_values_videos"].to("cuda")
-        mm_token_type_ids = torch.tensor(
-            self.processor.create_mm_token_type_ids(input_ids.tolist()),
-            dtype=torch.int,
-            device=input_ids.device,
-        )
+        mm_token_type_ids = inputs["mm_token_type_ids"].to("cuda")
         position_ids, _ = self.model.model.get_rope_index(
             input_ids=input_ids,
             mm_token_type_ids=mm_token_type_ids,
@@ -332,11 +328,9 @@ class QwenClient(BaseModelClient):
             return_tensors="pt",
         )["input_ids"].to("cuda")
         block_attention_mask = torch.ones_like(block_input_ids)
-        block_mm_token_type_ids = torch.tensor(
-            self.processor.create_mm_token_type_ids(block_input_ids.tolist()),
-            dtype=torch.int,
-            device=block_input_ids.device,
-        )
+        # Video-only block: mark video_pad tokens as type 2 (video), rest as 0 (text).
+        # Equivalent to create_mm_token_type_ids but stays on GPU (no CPU round-trip).
+        block_mm_token_type_ids = (block_input_ids == self.processor.video_token_id).int() * 2
         block_position_ids, _ = self.model.model.get_rope_index(
             input_ids=block_input_ids,
             mm_token_type_ids=block_mm_token_type_ids,
