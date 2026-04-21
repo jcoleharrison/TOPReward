@@ -1,3 +1,0 @@
-_target_: topreward.clients.qwen.QwenClient
-model_name: Qwen/Qwen3.5-9B
-max_input_length: 32000
