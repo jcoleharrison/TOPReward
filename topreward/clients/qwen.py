@@ -9,8 +9,6 @@ from qwen_vl_utils import process_vision_info
 from transformers import (
     AutoConfig,
     AutoProcessor,
-    Qwen3_5ForConditionalGeneration,
-    Qwen3_5MoeForConditionalGeneration,
     Qwen3VLForConditionalGeneration,
     Qwen3VLMoeForConditionalGeneration,
 )
@@ -45,7 +43,7 @@ class QwenClient(BaseModelClient):
             raise ValueError(
                 "Unsupported Qwen model architecture "
                 f"('{self.model_config.model_type}'). "
-                "Supported model types are: qwen3_vl, qwen3_vl_moe, qwen3_5, and qwen3_5_moe."
+                "Supported model types are: qwen3_vl, qwen3_vl_moe"
             )
         self.model = model_cls.from_pretrained(
             model_name,
@@ -71,19 +69,11 @@ class QwenClient(BaseModelClient):
             return Qwen3VLForConditionalGeneration
         if qwen_model_type == "qwen3_vl_moe":
             return Qwen3VLMoeForConditionalGeneration
-        if qwen_model_type == "qwen3_5":
-            return Qwen3_5ForConditionalGeneration
-        if qwen_model_type == "qwen3_5_moe":
-            return Qwen3_5MoeForConditionalGeneration
 
         if "qwen3vlforconditionalgeneration" in qwen_model_archs:
             return Qwen3VLForConditionalGeneration
         if "qwen3vlmoeforconditionalgeneration" in qwen_model_archs:
             return Qwen3VLMoeForConditionalGeneration
-        if "qwen3_5forconditionalgeneration" in qwen_model_archs:
-            return Qwen3_5ForConditionalGeneration
-        if "qwen3_5moeforconditionalgeneration" in qwen_model_archs:
-            return Qwen3_5MoeForConditionalGeneration
 
         return None
 
