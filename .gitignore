@@ -108,3 +108,14 @@ specs/
 # AI2-internal infrastructure scripts
 # =============================================================================
 gantry_*.sh
+
+# =============================================================================
+# ManiRewardBench — not released publicly
+# =============================================================================
+reports/
+report/ai2*
+results/**/*ai2*
+topreward/data_loaders/ai2.py
+topreward/scripts/static_frame_experiment.py
+configs/data_loader/ai2.yaml
+configs/dataset/ai2_*.yaml

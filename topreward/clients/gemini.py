@@ -21,6 +21,8 @@ from topreward.utils.images import encode_image
 class GeminiClient(BaseModelClient):
     """Gemini client with Vertex AI support and instruction reward computation."""
 
+    PREFIX_CACHE_SUPPORTED = False
+
     @staticmethod
     def _extract_http_status(exc: BaseException) -> int | None:
         """Best-effort extraction of an HTTP status code from various client exceptions."""
@@ -109,8 +111,9 @@ class GeminiClient(BaseModelClient):
         project_id: str | None = None,
         location: str = "us-central1",
         use_vertex_ai: bool = True,
+        prefix_cache_enabled: bool = False,
     ):
-        super().__init__(rpm=rpm)
+        super().__init__(rpm=rpm, prefix_cache_enabled=prefix_cache_enabled)
         self.model_name = model_name
         self.use_vertex_ai = use_vertex_ai
 

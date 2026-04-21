@@ -15,8 +15,16 @@ from topreward.utils.images import encode_image
 class OpenAIClient(BaseModelClient):
     """OpenAI client wrapping the Responses API for image+text prompting."""
 
-    def __init__(self, model_name: str = "gpt-4o-mini", detail: str = "high", rpm: float = 0.0):
-        super().__init__(rpm=rpm)
+    PREFIX_CACHE_SUPPORTED = False
+
+    def __init__(
+        self,
+        model_name: str = "gpt-4o-mini",
+        detail: str = "high",
+        rpm: float = 0.0,
+        prefix_cache_enabled: bool = False,
+    ):
+        super().__init__(rpm=rpm, prefix_cache_enabled=prefix_cache_enabled)
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
             raise OSError("Missing OPENAI_API_KEY environment variable")
